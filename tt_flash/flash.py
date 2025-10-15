@@ -291,6 +291,11 @@ def flash_chip_stage1(
     if detected_version:
         print("\t\t\tFW bundle version > ROM version. ROM will now be updated.")
 
+
+    if fw_bundle_version.running >= (19, 0, 0, 0) and manifest.bundle_version < (19, 0, 0, 0):
+        # Deny downgrades below 19.0.0
+        raise TTError("Downgrades below version 19.0.0 are not supported")
+
     try:
         image = fw_package.extractfile(f"./{boardname}/image.bin")
     except KeyError:
