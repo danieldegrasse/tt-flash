@@ -22,8 +22,8 @@ classifiers = [
 ]
 dependencies = [
   "pyyaml == 6.0.2",
-  'tt_tools_common==1.4.29',
-  "pyluwen==0.7.11",
+  "tt-tools-common @ git+https://github.com/danieldegrasse/tt-tools-common.git@8052f28c4d69e2c61e27cc6c4d9102bfb9c1164d",
+  "pyluwen @ git+https://github.com/danieldegrasse/luwen.git@d74d6ccf16a07579859e10b5d401baaa68c6b42f#subdirectory=crates/pyluwen",
   "tabulate == 0.9.0",
   "tomli == 2.0.1; python_version < '3.11'",
 
