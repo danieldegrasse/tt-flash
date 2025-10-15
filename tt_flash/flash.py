@@ -846,6 +846,17 @@ def flash_chips(
     if len(needs_reset_wh) > 0 or len(needs_reset_bh) > 0:
         print(f"{CConfig.COLOR.GREEN}Stage:{CConfig.COLOR.ENDC} RESET")
 
+        m3_delay = 20 # M3 takes 20 seconds to boot and be ready after a reset
+        running_version = chip.get_bundle_version().running
+        if (running_version is None) or (running_version <= (18, 12, 99, 0) and manifest.bundle_version >= (18, 12, 99, 0)):
+            # We crossed the 19.0.0 version boundary, which has a new m3 fw that takes longer to boot
+            # We check for 18.12.99 because some 18.12.99 builds have the new m3 fw
+            print(
+                "\t\tDetected update across version 19.0.0, will wait 60 seconds for m3 to boot after reset"
+            )
+            print(f"\t\t{CConfig.COLOR.RED}Note- downgrades below this version are not possible!{CConfig.COLOR.ENDC}")
+            m3_delay = 60
+
         if no_reset:
             if rc != 0:
                 print(
@@ -909,7 +920,8 @@ def flash_chips(
 
                 if len(needs_reset_bh) > 0:
                     BHChipReset().full_lds_reset(
-                        pci_interfaces=needs_reset_bh, reset_m3=True
+                        pci_interfaces=needs_reset_bh, reset_m3=True,
+                        m3_delay=m3_delay
                     )
 
                 if len(needs_reset_wh) > 0 or len(needs_reset_bh) > 0:
